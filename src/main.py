@@ -73,7 +73,7 @@ for epoch in range(epochs):
     model.train()
     running_loss = 0.0
     
-    for images, labels in train_loader:
+    for i, (images, labels) in enumerate(train_loader):
         images, labels = images.to(device), labels.to(device)
         
         optimizer.zero_grad()
@@ -84,6 +84,9 @@ for epoch in range(epochs):
         optimizer.step()
         
         running_loss += loss.item()
+
+        if (i + 1) % 10 == 0:
+            print(f"  Batch {i+1}/{len(train_loader)} complete")
         
     epoch_loss = running_loss / len(train_loader)
     print(f"Epoch {epoch+1}/{epochs} - Loss: {epoch_loss:.4f}")
