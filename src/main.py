@@ -1,13 +1,9 @@
-# https://www.kaggle.com/code/asad36302/classify-brain-tumor-mri-cnn-with-merged-dataset#Copy-Dataset-2-Training
+import time
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-
-# ------------------------------------
-# Model Definition
-# ------------------------------------
 
 class BrainTumorCNN(nn.Module):
     def __init__(self, num_classes):
@@ -37,39 +33,31 @@ class BrainTumorCNN(nn.Module):
         x = self.classifier(x)
         return x
 
-# standardizes images and normalizes to tensor values (0-1.0)
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-# assign datasets to folders
 train_dataset = datasets.ImageFolder(root='data/Training', transform=transform)
 test_dataset = datasets.ImageFolder(root='data/Testing', transform=transform)
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
-#print(train_dataset.class_to_idx)
-
-# use gpu if available 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = BrainTumorCNN(num_classes=4).to(device)
 
-# no idea what ts does
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-# ------------------------------------
-# Model Training
-# ------------------------------------
-
-# number of times to go through dataset 
 epochs = 10
 
+total_start_time = time.time()
+
 for epoch in range(epochs):
-    # modern machine.learn
+    epoch_start_time = time.time()
+    
     model.train()
     running_loss = 0.0
     
@@ -87,13 +75,16 @@ for epoch in range(epochs):
 
         if (i + 1) % 25 == 0:
             print(f"  Batch {i+1}/{len(train_loader)} complete")
-        
+    
     epoch_loss = running_loss / len(train_loader)
-    print(f"Epoch {epoch+1}/{epochs} - Loss: {epoch_loss:.4f}")
+    epoch_end_time = time.time()
+    epoch_duration = epoch_end_time - epoch_start_time
+    
+    print(f"Epoch {epoch+1}/{epochs} - Loss: {epoch_loss:.4f} - Time: {epoch_duration:.2f} seconds")
 
-# ------------------------------------
-# Model Testing
-# ------------------------------------
+total_end_time = time.time()
+total_duration = total_end_time - total_start_time
+print(f"\nTotal Training Time: {total_duration:.2f} seconds\n")
 
 correct = 0
 total = 0
@@ -112,5 +103,4 @@ with torch.no_grad():
 accuracy = 100 * correct / total
 print(f"Final Validation Accuracy: {accuracy:.2f}%")
 
-# save model
 torch.save(model.state_dict(), 'brain_tumor_model.pth')
