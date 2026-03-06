@@ -46,6 +46,11 @@ train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+if torch.cuda.is_available():
+    print("Using Cuda Cores")
+else:
+    print("Using CPU")
+
 model = BrainTumorCNN(num_classes=4).to(device)
 
 criterion = nn.CrossEntropyLoss()
