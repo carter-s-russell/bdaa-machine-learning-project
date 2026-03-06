@@ -85,7 +85,7 @@ for epoch in range(epochs):
         
         running_loss += loss.item()
 
-        if (i + 1) % 10 == 0:
+        if (i + 1) % 25 == 0:
             print(f"  Batch {i+1}/{len(train_loader)} complete")
         
     epoch_loss = running_loss / len(train_loader)
