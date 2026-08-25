@@ -223,7 +223,7 @@ def plot_confusion_matrix(model_path, test_loader, class_names):
     plt.show()
 
 # Generate the plots using the best saved weights
-print("Generating visualizations...")
+print("Generating visualizations")
 plot_training_curves(history)
 plot_confusion_matrix('best_brain_tumor_densenet.pth', test_loader, class_names)
-print("Done! Plots have been saved as PNG files in your directory.")
+print("Plots have been saved as PNG files in your directory.")
